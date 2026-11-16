@@ -21,6 +21,9 @@ Mapa i zapečené světlo jsou už v repozitáři (`Content/`).
 
 Ovládání: WASD chůze · myš rozhled · Shift běh · mezerník skok · F baterka · R znovu · Esc konec
 
+## Výkon
+Měřeno na integrované Intel grafice v 1600×900: 31–43 FPS (`Tools/playshot.sh` — hra sama vyfotí 6 pohledů do `Saved/Shots` a zapíše FPS do logu).
+
 ## Struktura
 - `Source/Galerie/` — hra v C++ (hráč, světla, pravidla, HUD)
 - `Tools/build_level.py` — import assetů, materiály a stavba mapy (Unreal Python)

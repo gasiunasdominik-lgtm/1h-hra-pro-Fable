@@ -197,7 +197,7 @@ void AGPOrb::BeginPlay()
 	if (USoundBase* S = LoadSnd(TEXT("orb_hum"), true))
 	{
 		Hum->SetSound(S);
-		Hum->SetVolumeMultiplier(0.8f);
+		Hum->SetVolumeMultiplier(0.45f);
 		Hum->SetPitchMultiplier(FMath::FRandRange(0.94f, 1.06f));
 		Hum->Play(FMath::FRandRange(0.f, 5.f));
 	}
@@ -321,7 +321,15 @@ void AGPGameMode::Tick(float Dt)
 				bShotTaken = true;
 				FScreenshotRequest::RequestScreenshot(FPaths::ProjectSavedDir() / FString::Printf(TEXT("Shots/view_%d.png"), ShotIdx), true, false);
 			}
-			if (ShotT > 3.5f) { ++ShotIdx; ShotT = 0.f; bShotTaken = false; }
+			// mereni vykonu: prumerne FPS behem pohledu (po ustaleni)
+			static float FpsAcc = 0.f; static int32 FpsN = 0;
+			if (ShotT > 1.f) { FpsAcc += Dt; ++FpsN; }
+			if (ShotT > 3.5f)
+			{
+				UE_LOG(LogTemp, Display, TEXT("GALERIE FPS view %d: %.1f"), ShotIdx, FpsN > 0 ? FpsN / FMath::Max(FpsAcc, 0.001f) : 0.f);
+				FpsAcc = 0.f; FpsN = 0;
+				++ShotIdx; ShotT = 0.f; bShotTaken = false;
+			}
 		}
 		else if (ShotIdx >= N)
 		{

@@ -212,9 +212,9 @@ def main():
     M['wall_y'] = pbr('M_WallY', pl[0], pl[1], pl[2], 'yz', 380.0, tint=(0.40, 0.16, 0.13), rough_mul=1.0)
     M['ceil'] = pbr('M_Ceil', pl[0], pl[1], pl[2], 'xy', 380.0, tint=(0.85, 0.82, 0.76))
     M['white_x'] = pbr('M_WhiteX', pl[0], pl[1], pl[2], 'xz', 380.0, tint=(0.82, 0.79, 0.73))
-    M['dark'] = pbr('M_DarkMarble', mb[0], mb[1], mb[2], 'uv', tiling=(1, 1), tint=(0.10, 0.10, 0.11), rough_mul=0.3, rough_add=0.05)
-    M['dark_x'] = pbr('M_DarkMarbleX', mb[0], mb[1], mb[2], 'xz', 300.0, tint=(0.10, 0.10, 0.11), rough_mul=0.3, rough_add=0.05)
-    M['dark_y'] = pbr('M_DarkMarbleY', mb[0], mb[1], mb[2], 'yz', 300.0, tint=(0.10, 0.10, 0.11), rough_mul=0.3, rough_add=0.05)
+    M['dark'] = pbr('M_DarkMarble', mb[0], mb[1], mb[2], 'uv', tiling=(1, 1), tint=(0.24, 0.23, 0.23), rough_mul=0.3, rough_add=0.05)
+    M['dark_x'] = pbr('M_DarkMarbleX', mb[0], mb[1], mb[2], 'xz', 300.0, tint=(0.24, 0.23, 0.23), rough_mul=0.3, rough_add=0.05)
+    M['dark_y'] = pbr('M_DarkMarbleY', mb[0], mb[1], mb[2], 'yz', 300.0, tint=(0.24, 0.23, 0.23), rough_mul=0.3, rough_add=0.05)
     M['col'] = pbr('M_Column', mb[0], mb[1], mb[2], 'uv', tiling=(2, 3), tint=(0.9, 0.88, 0.84), rough_mul=0.5, rough_add=0.05)
     M['gold'] = pbr('M_Gold', None, None, None, tint=(1.0, 0.72, 0.30), rough_add=0.22, metal=1.0)
     M['iron'] = pbr('M_Iron', None, None, None, tint=(0.03, 0.03, 0.035), rough_add=0.45, metal=1.0)
@@ -384,7 +384,7 @@ def main():
         box((x, y, ped + 2), (104, 104, 4), M['gold'], 32, shadow=False, label='PedestalTrim')
         place(name, x, y, ped + 4, h, yaw=90.0)
         # bodovy reflektor ze stropu + sviticí telo lampy (je videt v odrazech)
-        light(unreal.SpotLight, (x, y + 150, H - 60), 26000, (1.0, 0.82, 0.62), rot(pitch=-72, yaw=-90), 950, 'ExhibitSpot',
+        light(unreal.SpotLight, (x, y + 150, H - 60), 42000, (1.0, 0.82, 0.62), rot(pitch=-72, yaw=-90), 950, 'ExhibitSpot',
               inner_cone_angle=14.0, outer_cone_angle=30.0)
         mesh_actor(CYL, (x, y + 150, H - 40), (0.16, 0.16, 0.36), M['iron'], 32, False, label='LampBody')
         mesh_actor(SPH, (x, y + 150, H - 60), (0.11, 0.11, 0.11), M['lamp'], 32, False, label='LampGlow', movable=True)
@@ -392,17 +392,17 @@ def main():
     # obrazy mezi exponaty
     for i, x in enumerate((-1200, -600, 0, 600, 1200)):
         place('fancy_picture_frame_0%d' % (1 + i % 2), x, -hy + 2, 230, 210, yaw=0.0)
-        light(unreal.SpotLight, (x, -hy + 190, H - 60), 15000, (1.0, 0.86, 0.7), rot(pitch=-58, yaw=-90), 800, 'PictureSpot',
+        light(unreal.SpotLight, (x, -hy + 190, H - 60), 24000, (1.0, 0.86, 0.7), rot(pitch=-58, yaw=-90), 800, 'PictureSpot',
               inner_cone_angle=16.0, outer_cone_angle=34.0)
         mesh_actor(SPH, (x, -hy + 190, H - 60), (0.09, 0.09, 0.09), M['lamp'], 32, False, label='LampGlow', movable=True)
 
     # lavice a lustry v ose haly
     for x in (-750, 750):
-        place('painted_wooden_bench', x, 0, 1.2, 95, yaw=0.0)
+        place('painted_wooden_bench', x, 0, 1.2, 118, yaw=0.0)
     for x in (-1050, 0, 1050):
         if place('Chandelier_01', x, 0, H - 190, 190) is None:
             mesh_actor(SPH, (x, 0, H - 120), (0.5, 0.5, 0.5), M['lamp'], 32, False, label='LampGlobe', movable=True)
-        light(unreal.PointLight, (x, 0, H - 210), 9000, (1.0, 0.74, 0.46), None, 1500, 'ChandelierLight', source_radius=20.0)
+        light(unreal.PointLight, (x, 0, H - 210), 15000, (1.0, 0.74, 0.46), None, 1500, 'ChandelierLight', source_radius=20.0)
         mesh_actor(SPH, (x, 0, H - 150), (0.14, 0.14, 0.14), M['lamp'], 32, False, label='ChandelierGlow', movable=True)
 
     # ---------- venek: mesic, obloha, blesky ----------
