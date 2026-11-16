@@ -76,6 +76,10 @@ public:
 	float ThunderDelay = -1.f;
 	float TickAcc = 0.f;
 	float PickupFlash = 0.f;
+	int32 ShotIdx = -2;       // -2 vypnuto, -1 zahrivani, 0.. pohledy
+	float ShotT = 0.f;
+	float ShotWarm = 25.f;
+	bool bShotTaken = false;
 };
 
 UCLASS()

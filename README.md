@@ -8,9 +8,16 @@ Noční mramorová galerie za bouřky: posbírej všechna zlatá světla, než s
 - **Zvuk:** déšť, hrom po blesku, kroky po mramoru s dozvukem haly, 3D prostorový hlas světel (`Tools/make_audio.py`)
 - **Assety:** PBR textury, modely a HDRI z [Poly Haven](https://polyhaven.com) (CC0)
 
+![Galerie](Docs/galerie_1.png)
+![Exponáty](Docs/galerie_2.png)
+![Parkety](Docs/galerie_3.png)
+
 ## Spuštění
-1. `SESTAVIT.bat` — zkompiluje C++, postaví mapu, zapeče světlo a spustí hru (poprvé trvá déle kvůli shaderům)
-2. příště stačí `HRAT.bat`
+Mapa i zapečené světlo jsou už v repozitáři (`Content/`).
+1. `Tools\win\build.bat` — zkompiluje C++ modul (jednou, ~30 s)
+2. `HRAT.bat` — spustí hru. Při úplně prvním spuštění se pár minut kompilují shadery (povrchy jsou mezitím šedé šachovnice), pak už startuje rychle.
+
+`SESTAVIT.bat` postaví vše od nuly (import, mapa, Lightmass bake ~15 min) — potřeba jen po změně `Tools/build_level.py`; po něm je nutné znovu zapéct světlo.
 
 Ovládání: WASD chůze · myš rozhled · Shift běh · mezerník skok · F baterka · R znovu · Esc konec
 

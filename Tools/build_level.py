@@ -72,7 +72,9 @@ def new_mat(name):
     path = '/Game/Mat/' + name
     if EAL.does_asset_exist(path):
         EAL.delete_asset(path)
-    return AT.create_asset(name, '/Game/Mat', unreal.Material, unreal.MaterialFactoryNew())
+    m = AT.create_asset(name, '/Game/Mat', unreal.Material, unreal.MaterialFactoryNew())
+    sp(m, used_with_static_lighting=True)   # jinak se u zapecenych objektu ve hre pouzije vychozi material
+    return m
 
 
 def node(m, cls, x, y, **props):
@@ -374,8 +376,8 @@ def main():
             box((x, y, H - 54), (84, 84, 8), M['gold'], 32, shadow=False, label='ColRing')
 
     # ---------- exponaty u jizni steny ----------
-    EX = [(-1500, 'marble_bust_01', 95, 110), (-900, 'brass_vase_01', 70, 110), (-300, 'horse_statue_01', 120, 100),
-          (300, 'bronze_whale_statue', 70, 110), (900, 'ceramic_vase_01', 75, 110), (1500, 'gothic_statue', 210, 30)]
+    EX = [(-1500, 'marble_bust_01', 135, 105), (-900, 'brass_vase_01', 105, 105), (-300, 'horse_statue_01', 150, 100),
+          (300, 'bronze_whale_statue', 120, 100), (900, 'ceramic_vase_01', 100, 105), (1500, 'gothic_statue', 230, 30)]
     for x, name, h, ped in EX:
         y = -hy + 120
         box((x, y, ped / 2.0), (96, 96, ped), M['dark'], 64, label='Pedestal')
@@ -389,7 +391,7 @@ def main():
 
     # obrazy mezi exponaty
     for i, x in enumerate((-1200, -600, 0, 600, 1200)):
-        place('fancy_picture_frame_0%d' % (1 + i % 2), x, -hy + 6, 230, 210, yaw=90.0)
+        place('fancy_picture_frame_0%d' % (1 + i % 2), x, -hy + 2, 230, 210, yaw=0.0)
         light(unreal.SpotLight, (x, -hy + 190, H - 60), 15000, (1.0, 0.86, 0.7), rot(pitch=-58, yaw=-90), 800, 'PictureSpot',
               inner_cone_angle=16.0, outer_cone_angle=34.0)
         mesh_actor(SPH, (x, -hy + 190, H - 60), (0.09, 0.09, 0.09), M['lamp'], 32, False, label='LampGlow', movable=True)

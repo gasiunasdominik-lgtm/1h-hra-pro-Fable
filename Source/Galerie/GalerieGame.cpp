@@ -24,6 +24,10 @@
 #include "Sound/SoundAttenuation.h"
 #include "UObject/ConstructorHelpers.h"
 #include "InputCoreTypes.h"
+#include "UnrealClient.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
+#include "Misc/Paths.h"
 
 namespace
 {
@@ -57,11 +61,11 @@ AGPCharacter::AGPCharacter()
 	Torch->SetRelativeLocation(FVector(10.f, 14.f, -12.f));
 	Torch->SetMobility(EComponentMobility::Movable);
 	Torch->SetIntensityUnits(ELightUnits::Unitless);
-	Torch->SetIntensity(16000.f);
+	Torch->SetIntensity(5500.f);
 	Torch->SetLightColor(FLinearColor(1.f, 0.93f, 0.82f));
 	Torch->SetAttenuationRadius(1500.f);
 	Torch->SetInnerConeAngle(9.f);
-	Torch->SetOuterConeAngle(24.f);
+	Torch->SetOuterConeAngle(28.f);
 	Torch->SetCastShadows(false);
 
 	UCharacterMovementComponent* Mv = GetCharacterMovement();
@@ -245,6 +249,12 @@ void AGPGameMode::BeginPlay()
 		}
 	}
 
+	if (FParse::Param(FCommandLine::Get(), TEXT("shots")))
+	{
+		ShotIdx = -1;
+		FParse::Value(FCommandLine::Get(), TEXT("shotwarm="), ShotWarm);
+	}
+
 	SndPickup = LoadSnd(TEXT("pickup"));
 	SndWin = LoadSnd(TEXT("win"));
 	SndLose = LoadSnd(TEXT("lose"));
@@ -288,6 +298,37 @@ void AGPGameMode::Tick(float Dt)
 		{
 			UGameplayStatics::PlaySound2D(this, SndThunder[FMath::RandRange(0, SndThunder.Num() - 1)], FMath::FRandRange(0.7f, 1.f), FMath::FRandRange(0.9f, 1.05f));
 		}
+	}
+
+	// overovaci rezim: -shots => hra sama vyfoti nekolik pohledu do Saved/Shots a skonci
+	if (ShotIdx > -2 && Ch && PC)
+	{
+		static const float Views[][5] = {
+			{-1620.f, 0.f, 0.f, -4.f, 0.f}, {-1100.f, -150.f, -62.f, -6.f, 0.f}, {-250.f, 120.f, -105.f, -3.f, 0.f},
+			{200.f, -200.f, 62.f, 2.f, 0.f}, {1500.f, 150.f, 172.f, -12.f, 0.f}, {1150.f, -330.f, -60.f, 4.f, 1.f} };
+		const int32 N = UE_ARRAY_COUNT(Views);
+		ShotT += Dt;
+		if (ShotIdx == -1 && ShotT > ShotWarm) { ShotIdx = 0; ShotT = 0.f; bShotTaken = false; }
+		if (ShotIdx >= 0 && ShotIdx < N)
+		{
+			const float* Vw = Views[ShotIdx];
+			Ch->bFrozen = true;
+			Ch->SetActorLocation(FVector(Vw[0], Vw[1], 98.f));
+			PC->SetControlRotation(FRotator(Vw[3], Vw[2], 0.f));
+			Ch->Torch->SetVisibility(Vw[4] > 0.5f);
+			if (!bShotTaken && ShotT > 2.5f)
+			{
+				bShotTaken = true;
+				FScreenshotRequest::RequestScreenshot(FPaths::ProjectSavedDir() / FString::Printf(TEXT("Shots/view_%d.png"), ShotIdx), true, false);
+			}
+			if (ShotT > 3.5f) { ++ShotIdx; ShotT = 0.f; bShotTaken = false; }
+		}
+		else if (ShotIdx >= N)
+		{
+			UKismetSystemLibrary::QuitGame(this, PC, EQuitPreference::Quit, false);
+			return;
+		}
+		TimeLeft = FMath::Max(TimeLeft, 100.f);
 	}
 
 	if (PC)
