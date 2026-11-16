@@ -37,16 +37,6 @@ namespace
 		}
 		return S;
 	}
-
-	// GetInputMouseDelta ma v ruznych verzich enginu float& nebo double& - sablona vezme oboji.
-	template <typename T>
-	void ReadMouse(const APlayerController* PC, void (APlayerController::*Fn)(T&, T&) const, float& X, float& Y)
-	{
-		T A = 0, B = 0;
-		(PC->*Fn)(A, B);
-		X = static_cast<float>(A);
-		Y = static_cast<float>(B);
-	}
 }
 
 // ------------------------------------------------------------------ hrac
@@ -67,7 +57,7 @@ AGPCharacter::AGPCharacter()
 	Torch->SetRelativeLocation(FVector(10.f, 14.f, -12.f));
 	Torch->SetMobility(EComponentMobility::Movable);
 	Torch->SetIntensityUnits(ELightUnits::Unitless);
-	Torch->SetIntensity(2600.f);
+	Torch->SetIntensity(16000.f);
 	Torch->SetLightColor(FLinearColor(1.f, 0.93f, 0.82f));
 	Torch->SetAttenuationRadius(1500.f);
 	Torch->SetInnerConeAngle(9.f);
@@ -105,7 +95,7 @@ void AGPCharacter::Tick(float Dt)
 
 	// rozhlizeni
 	float Mx = 0.f, My = 0.f;
-	ReadMouse(PC, &APlayerController::GetInputMouseDelta, Mx, My);
+	PC->GetInputMouseDelta(Mx, My);
 	FRotator R = PC->GetControlRotation();
 	R.Yaw += Mx * 0.11f;
 	R.Pitch = FMath::Clamp(FRotator::NormalizeAxis(R.Pitch) + My * 0.11f, -82.f, 82.f);
@@ -176,7 +166,7 @@ AGPOrb::AGPOrb()
 	Light->SetupAttachment(RootComponent);
 	Light->SetMobility(EComponentMobility::Movable);
 	Light->SetIntensityUnits(ELightUnits::Unitless);
-	Light->SetIntensity(900.f);
+	Light->SetIntensity(4500.f);
 	Light->SetLightColor(FLinearColor(1.f, 0.72f, 0.28f));
 	Light->SetAttenuationRadius(520.f);
 	Light->SetCastShadows(false);
@@ -214,7 +204,7 @@ void AGPOrb::Tick(float Dt)
 	Super::Tick(Dt);
 	Phase += Dt;
 	SetActorLocation(Base + FVector(0.f, 0.f, FMath::Sin(Phase * 1.3f) * 9.f));
-	Light->SetIntensity(900.f * (0.82f + 0.18f * FMath::Sin(Phase * 3.1f) * FMath::Sin(Phase * 0.7f)));
+	Light->SetIntensity(4500.f * (0.82f + 0.18f * FMath::Sin(Phase * 3.1f) * FMath::Sin(Phase * 0.7f)));
 }
 
 // ------------------------------------------------------------------ pravidla
@@ -284,7 +274,7 @@ void AGPGameMode::Tick(float Dt)
 	{
 		FlashT += Dt;
 		const float A = (FlashT < 0.09f) ? 1.f : (FlashT < 0.17f) ? 0.1f : (FlashT < 0.30f) ? 0.8f : FMath::Max(0.f, 0.8f - (FlashT - 0.30f) * 2.6f);
-		for (ULightComponent* L : Flashes) { if (L) { L->SetIntensity(A * 60000.f); } }
+		for (ULightComponent* L : Flashes) { if (L) { L->SetIntensity(A * 1500000.f); } }
 		if (FlashT > 0.7f)
 		{
 			FlashT = -1.f;

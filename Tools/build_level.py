@@ -421,7 +421,7 @@ def main():
     sc.set_mobility(unreal.ComponentMobility.STATIC)
     for x in (-1200, 0, 1200):
         a = light(unreal.PointLight, (x, hy + 420, 520), 0.0, (0.75, 0.85, 1.0), None, 3600, 'Lightning', static=False, shadows=True)
-        a.tags = [unreal.Name('Lightning')]
+        sp(a, tags=[unreal.Name('Lightning')])
 
     # ---------- odrazy ----------
     for x in (-1350, -450, 450, 1350):
@@ -443,7 +443,7 @@ def main():
     ppv = spawn(unreal.PostProcessVolume, (0, 0, 200), None, 'PostProcess', 'Lights')
     sp(ppv, unbound=True)
     s = ppv.get_editor_property('settings')
-    PP = dict(auto_exposure_method=unreal.AutoExposureMethod.AEM_MANUAL, auto_exposure_bias=float(os.environ.get('GALERIE_EV', '9.0')),
+    PP = dict(auto_exposure_method=unreal.AutoExposureMethod.AEM_MANUAL, auto_exposure_bias=float(os.environ.get('GALERIE_EV', '1.0')),
               auto_exposure_apply_physical_camera_exposure=False,
               bloom_intensity=0.9, bloom_threshold=-1.0, vignette_intensity=0.55,
               screen_space_reflection_intensity=100.0, screen_space_reflection_quality=80.0, screen_space_reflection_max_roughness=0.6,
