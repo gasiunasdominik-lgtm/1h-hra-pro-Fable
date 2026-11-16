@@ -61,7 +61,7 @@ AGPCharacter::AGPCharacter()
 	Torch->SetRelativeLocation(FVector(10.f, 14.f, -12.f));
 	Torch->SetMobility(EComponentMobility::Movable);
 	Torch->SetIntensityUnits(ELightUnits::Unitless);
-	Torch->SetIntensity(5500.f);
+	Torch->SetIntensity(9000.f);
 	Torch->SetLightColor(FLinearColor(1.f, 0.93f, 0.82f));
 	Torch->SetAttenuationRadius(1500.f);
 	Torch->SetInnerConeAngle(9.f);
@@ -308,6 +308,27 @@ void AGPGameMode::Tick(float Dt)
 			{200.f, -200.f, 62.f, 2.f, 0.f}, {1500.f, 150.f, 172.f, -12.f, 0.f}, {1150.f, -330.f, -60.f, 4.f, 1.f} };
 		const int32 N = UE_ARRAY_COUNT(Views);
 		ShotT += Dt;
+		// test chuze: posledni 4 s zahrivani jde postava dopredu stejnou cestou jako pri stisku W
+		if (ShotIdx == -1)
+		{
+			static float NextLog = 0.f;
+			if (ShotT > NextLog)
+			{
+				NextLog += 2.f;
+				const FVector L = Ch->GetActorLocation();
+				UE_LOG(LogTemp, Display, TEXT("GALERIE POS t=%.0f  %.0f %.0f %.0f  mode %d  vel %s"), ShotT, L.X, L.Y, L.Z, (int32)Ch->GetCharacterMovement()->MovementMode, *Ch->GetVelocity().ToCompactString());
+			}
+			static FVector WalkFrom = FVector::ZeroVector; static bool bWalk = false;
+			if (ShotT > ShotWarm - 4.f)
+			{
+				if (!bWalk) { bWalk = true; WalkFrom = Ch->GetActorLocation(); }
+				Ch->AddMovementInput(FVector(1.f, 0.f, 0.f), 1.f);
+			}
+			if (ShotT > ShotWarm)
+			{
+				UE_LOG(LogTemp, Display, TEXT("GALERIE WALK moved %.0f cm in 4 s, on ground %d"), FVector::Dist2D(WalkFrom, Ch->GetActorLocation()), Ch->GetCharacterMovement()->IsMovingOnGround() ? 1 : 0);
+			}
+		}
 		if (ShotIdx == -1 && ShotT > ShotWarm) { ShotIdx = 0; ShotT = 0.f; bShotTaken = false; }
 		if (ShotIdx >= 0 && ShotIdx < N)
 		{

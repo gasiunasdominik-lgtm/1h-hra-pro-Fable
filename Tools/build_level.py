@@ -302,6 +302,9 @@ def main():
                 c.set_material(i, mat)
         sp(c, override_light_map_res=True, overridden_light_map_res=int(lm), cast_shadow=shadow)
         c.set_mobility(unreal.ComponentMobility.MOVABLE if movable else unreal.ComponentMobility.STATIC)
+        if movable or not shadow:   # dekorace (obloha, mesic, zarici koule) nesmi hrace blokovat
+            a.set_actor_enable_collision(False)
+            c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
         return a
 
     def box(center, size, mat, lm=64, shadow=True, label='Box', folder='Hall', r=None):
